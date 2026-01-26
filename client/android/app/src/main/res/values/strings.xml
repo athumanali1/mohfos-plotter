@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">mohfos-plotter</string>
+    <string name="title_activity_main">mohfos-plotter</string>
+    <string name="package_name">com.mohfos.plotter</string>
+    <string name="custom_url_scheme">com.mohfos.plotter</string>
+</resources>
