@@ -325,6 +325,12 @@ app.get('/', (req, res) => {
   });
 });
 
+// Error handling middleware to ensure JSON responses
+app.use((err, req, res, next) => {
+  console.error('Server Error:', err);
+  res.status(500).json({ error: 'Internal server error', details: String(err?.message || err) });
+});
+
 app.listen(PORT, () => {
   console.log(`moHFoS Plotter API server running on port ${PORT}`);
 });
