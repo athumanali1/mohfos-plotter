@@ -36,5 +36,13 @@ public class MainActivity extends BridgeActivity {
     // Allow mixed content for local LAN HTTP API (development)
     WebSettings settings = getBridge().getWebView().getSettings();
     settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+    
+    // Set API base URL for Render deployment
+    getBridge().getWebView().post(() -> {
+      getBridge().getWebView().evaluateJavascript(
+        "window.API_BASE = 'https://mohfos-plotter-api.onrender.com';",
+        null
+      );
+    });
   }
 }
