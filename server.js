@@ -139,7 +139,7 @@ const analyzeGraphQuestion = async (question) => {
     Return only valid JSON.
   `;
 
-  // Prefer Gemini if configured, with OpenAI fallback
+  // Prefer Gemini if configured
   if (GEMINI_API_KEY) {
     try {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(GEMINI_MODEL)}:generateContent?key=${GEMINI_API_KEY}`;
@@ -166,8 +166,7 @@ const analyzeGraphQuestion = async (question) => {
       return parseAiJson(text, 'Gemini');
     } catch (err) {
       console.error('Gemini Analysis Error:', err);
-      console.log('Falling back to OpenAI...');
-      // Fall through to OpenAI fallback
+      throw err;
     }
   }
 
