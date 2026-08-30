@@ -313,5 +313,5 @@ const generateArduinoCommands = (data) => {
 };
 
 app.listen(PORT, () => {
-  console.log(`moHFoS Plotter server running on port ${PORT}`);
+  console.log(`moHFoS Plotter API server running on port ${PORT}`);
 });
