@@ -272,13 +272,42 @@ function App() {
 
 const generateCommandPreview = (analysis) => {
   const commands = [];
-  commands.push('INIT');
-  commands.push(`SCALE ${analysis.a4Scale?.xScale || 1},${analysis.a4Scale?.yScale || 1}`);
-  commands.push(`MOVE ${analysis.a4Scale?.origin?.x || 0},${analysis.a4Scale?.origin?.y || 0}`);
-  commands.push('DRAW_AXES');
-  commands.push('PEN_DOWN');
   
+  // Initialize plotter
+  commands.push('INIT');
+  
+  // Set scale for A4 paper
+  commands.push(`SCALE ${analysis.a4Scale?.xScale || 1},${analysis.a4Scale?.yScale || 1}`);
+  
+  // Calculate axis endpoints based on ranges
+  const xMin = analysis.xRange?.min ?? -5;
+  const xMax = analysis.xRange?.max ?? 5;
+  const yMin = analysis.yRange?.min ?? -5;
+  const yMax = analysis.yRange?.max ?? 5;
+  
+  const originX = analysis.a4Scale?.origin?.x ?? 0;
+  const originY = analysis.a4Scale?.origin?.y ?? 0;
+  
+  // --- DRAW VERTICAL Y-AXIS ---
+  commands.push(`MOVE ${originX},${yMax}`);
+  commands.push('PEN_DOWN');
+  commands.push(`MOVE ${originX},${originY}`);
+  if (yMin < 0) {
+    commands.push(`MOVE ${originX},${yMin}`);
+  }
+  commands.push('PEN_UP');
+  
+  // --- DRAW HORIZONTAL X-AXIS ---
+  commands.push(`MOVE ${xMin},${originY}`);
+  commands.push('PEN_DOWN');
+  commands.push(`MOVE ${originX},${originY}`);
+  commands.push(`MOVE ${xMax},${originY}`);
+  commands.push('PEN_UP');
+  
+  // --- PLOT THE GRAPH CURVE ---
   if (analysis.plottingPoints && analysis.plottingPoints.length > 0) {
+    commands.push(`MOVE ${analysis.plottingPoints[0].x},${analysis.plottingPoints[0].y}`);
+    commands.push('PEN_DOWN');
     analysis.plottingPoints.slice(0, 5).forEach(point => {
       commands.push(`MOVE ${point.x},${point.y}`);
     });
