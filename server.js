@@ -312,6 +312,19 @@ const generateArduinoCommands = (data) => {
   return commands;
 };
 
+// Root route for API status
+app.get('/', (req, res) => {
+  res.json({
+    status: 'online',
+    service: 'moHFoS Plotter API',
+    version: '2.0',
+    endpoints: {
+      analyze: 'POST /api/analyze',
+      sendToArduino: 'POST /api/send-to-arduino'
+    }
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`moHFoS Plotter API server running on port ${PORT}`);
 });
