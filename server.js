@@ -257,19 +257,47 @@ const generateArduinoCommands = (data) => {
   // Set scale for A4 paper
   commands.push(`SCALE ${data.a4Scale.xScale},${data.a4Scale.yScale}`);
   
-  // Move to origin
-  commands.push(`MOVE ${data.a4Scale.origin.x},${data.a4Scale.origin.y}`);
+  // Calculate axis endpoints based on ranges
+  const xMin = data.xRange?.min || -5;
+  const xMax = data.xRange?.max || 5;
+  const yMin = data.yRange?.min || -5;
+  const yMax = data.yRange?.max || 5;
   
-  // Draw axes
-  commands.push('DRAW_AXES');
+  const originX = data.a4Scale.origin.x;
+  const originY = data.a4Scale.origin.y;
   
-  // Plot points
-  data.plottingPoints.forEach((point, index) => {
-    if (index === 0) {
-      commands.push(`PEN_DOWN`);
-    }
-    commands.push(`MOVE ${point.x},${point.y}`);
-  });
+  // --- DRAW VERTICAL Y-AXIS ---
+  // Move to top of Y-axis (pen up)
+  commands.push(`MOVE ${originX},${yMax}`);
+  // Draw down to origin
+  commands.push('PEN_DOWN');
+  commands.push(`MOVE ${originX},${originY}`);
+  // Continue to bottom if needed
+  if (yMin < 0) {
+    commands.push(`MOVE ${originX},${yMin}`);
+  }
+  commands.push('PEN_UP');
+  
+  // --- DRAW HORIZONTAL X-AXIS ---
+  // Move to left of X-axis (pen up)
+  commands.push(`MOVE ${xMin},${originY}`);
+  // Draw right to origin
+  commands.push('PEN_DOWN');
+  commands.push(`MOVE ${originX},${originY}`);
+  // Continue to right end
+  commands.push(`MOVE ${xMax},${originY}`);
+  commands.push('PEN_UP');
+  
+  // --- PLOT THE GRAPH CURVE ---
+  // Move to first point (pen up)
+  if (data.plottingPoints && data.plottingPoints.length > 0) {
+    commands.push(`MOVE ${data.plottingPoints[0].x},${data.plottingPoints[0].y}`);
+    // Draw the curve
+    commands.push('PEN_DOWN');
+    data.plottingPoints.forEach((point) => {
+      commands.push(`MOVE ${point.x},${point.y}`);
+    });
+  }
   
   // Handle shading if needed
   if (data.shadingRegions && data.shadingRegions.length > 0) {
@@ -278,7 +306,7 @@ const generateArduinoCommands = (data) => {
     });
   }
   
-  // Lift pen
+  // Lift pen and return home
   commands.push('PEN_UP');
   commands.push('HOME');
   
