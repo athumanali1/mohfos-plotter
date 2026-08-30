@@ -71,7 +71,6 @@ const parseAiJson = (rawText, providerName) => {
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'client/build')));
 
 // Arduino connection
 let arduinoPort = null;
@@ -312,11 +311,6 @@ const generateArduinoCommands = (data) => {
   
   return commands;
 };
-
-// Serve React app
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-});
 
 app.listen(PORT, () => {
   console.log(`moHFoS Plotter server running on port ${PORT}`);
