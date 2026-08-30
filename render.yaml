@@ -3,7 +3,7 @@ services:
     name: mohfos-plotter-api
     env: node
     plan: free
-    buildCommand: npm install
+    buildCommand: npm install && cd client && npm install && npm run build
     startCommand: node server.js
     autoDeploy: true
     envVars:
